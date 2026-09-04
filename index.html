@@ -235,7 +235,7 @@
       if (S.i===0) { S.phase="profile"; render(); return; }
       S.i--; render();
     }
-    function esc(s){ return String(s||"").replace(/[&<>"']/g, m => ({"&":"&","<":"<",">":">","\"":""","'":"&#39;"}[m])); }
+    function esc(s){ return String(s||"").replace(/[&<>"']/g, m => ({"&":"&"+"amp;","<":"&"+"lt;",">":"&"+"gt;","\"":"&"+"quot;","'":"&#39;"}[m])); }
     function drawRadar(scores) {
       const svg = document.getElementById("radar");
       const cx=200, cy=200, R=110, n=4;
