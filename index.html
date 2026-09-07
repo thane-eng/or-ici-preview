@@ -31,6 +31,7 @@
     .stats span { display: block; margin-top: 4px; font-size: 14px; color: var(--subtle); }
     .note { margin-top: 32px; font-size: 14px; line-height: 1.55; color: var(--muted); }
     .fine { margin-top: 12px; font-size: 14px; line-height: 1.55; color: var(--subtle); font-style: italic; }
+    .legal { margin-top: 40px; font-size: 11px; line-height: 1.55; color: var(--subtle); max-width: 42em; }
     .btn { min-height: 48px; width: 100%; border: 0; border-radius: 8px; padding: 16px 32px; font-size: 16px; font-weight: 600; font-family: inherit; }
     .btn-primary { margin-top: 40px; background: var(--fg); color: var(--bg); }
     .btn-ghost { margin-top: 12px; background: transparent; color: var(--fg); border: 1px solid var(--border); font-weight: 500; }
@@ -139,7 +140,8 @@
           <p class="note">Rate what you have actually observed. There are no right answers. Use “Unable to observe” when you do not have a basis to judge.</p>
           <p class="fine">Responses in this preview are not saved. Walk the experience before fielding.</p>
           <button class="btn btn-primary" id="begin">Begin the assessment</button>
-          <button class="btn btn-ghost" id="sample">View a sample report</button>`);
+          <button class="btn btn-ghost" id="sample">View a sample report</button>
+          <p class="legal">© 2026 Bellomo Leadership LLC. All rights reserved. This instrument is proprietary. Unauthorized copying, distribution, or reuse is prohibited.</p>`);
         on("#begin", () => { S.phase = "profile"; render(); });
         on("#sample", () => {
           S.profile = { name:"Sample rater", role:"SLT member", subject:"Site OR", site:"Preview plant" };
@@ -159,7 +161,8 @@
             <label><span>Person or role being rated (optional in preview)</span><input id="subject" placeholder="Name or role" value="${esc(S.profile.subject)}" /></label>
             <label><span>Site / plant (optional)</span><input id="site" placeholder="Plant or site name" value="${esc(S.profile.site)}" /></label>
             <button class="btn btn-primary" type="submit">Start the assessment</button>
-          </form>`);
+          </form>
+          <p class="legal">© 2026 Bellomo Leadership LLC. All rights reserved. This instrument is proprietary. Unauthorized copying, distribution, or reuse is prohibited.</p>`);
         document.getElementById("pf").onsubmit = e => {
           e.preventDefault();
           S.profile = { name: name.value, role: role.value, subject: subject.value, site: site.value };
@@ -179,7 +182,8 @@
             <h2 style="font-size:1.6rem;line-height:1.25">${q.text}</h2>
             <p class="fine">${c.theme}</p>
             <div style="margin:32px 0">${SCALE.map(([v,l]) => `<button class="opt${S.answers[q.id]===v?" on":""}" data-v="${v}"><span class="dot">${v===0?"–":v}</span><span>${l}</span></button>`).join("")}</div>
-            <button class="btn btn-primary" id="next" ${S.answers[q.id]==null?"disabled":""}>Next</button>`);
+            <button class="btn btn-primary" id="next" ${S.answers[q.id]==null?"disabled":""}>Next</button>
+            <p class="legal">© 2026 Bellomo Leadership LLC. All rights reserved. This instrument is proprietary. Unauthorized copying, distribution, or reuse is prohibited.</p>`);
           document.querySelectorAll(".opt").forEach(b => b.onclick = () => { S.answers[q.id] = +b.dataset.v; render(); });
           on("#next", () => { if (S.answers[q.id]==null) return; S.i++; if (S.i>=STEPS.length) S.phase="results"; render(); });
           on("#back", back);
@@ -227,7 +231,8 @@
           </section>`;
         }).join("")}
         <p class="fine" style="margin-top:32px">In the live instrument, this page can be reserved for a facilitator report. This preview shows scores so you can walk the four categories with the client.</p>
-        <button class="btn btn-primary" id="reset">Run preview again</button>`);
+        <button class="btn btn-primary" id="reset">Run preview again</button>
+        <p class="legal">© 2026 Bellomo Leadership LLC. All rights reserved. This instrument is proprietary. Unauthorized copying, distribution, or reuse is prohibited.</p>`);
       drawRadar(scores);
       on("#reset", () => { location.reload(); });
     }
