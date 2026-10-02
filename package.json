@@ -1,0 +1,9 @@
+{
+  "name": "or-assessment",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "isomorphic-git": "^1.42.6",
+    "ssh2": "^1.17.0"
+  }
+}

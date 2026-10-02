@@ -3,276 +3,316 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>OR Influence and Collaboration Assessment</title>
+  <title>OR Assessment · Bellomo Leadership</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
   <style>
-    :root {
-      --bg: #0f1f30; --surface: #16283a; --elevated: #1c3146;
-      --fg: #f3efe6; --muted: #9aa8b6; --subtle: #6e7c8a;
-      --border: rgba(243,239,230,.14); --border-strong: rgba(243,239,230,.28);
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: "Source Sans 3", system-ui, sans-serif; background: var(--bg); color: var(--fg); min-height: 100vh; }
-    button:not(:disabled), [role=button] { cursor: pointer; }
-    header { display: flex; align-items: center; gap: 16px; padding: 16px 20px; border-bottom: 1px solid var(--border); }
-    .mark { letter-spacing: .2em; font-size: 14px; font-weight: 500; color: var(--muted); }
-    .track { flex: 1; height: 4px; background: var(--elevated); border-radius: 999px; overflow: hidden; }
-    .fill { height: 100%; background: var(--fg); border-radius: 999px; width: 0; transition: width .3s ease; }
-    .pct { width: 36px; text-align: right; font-size: 12px; color: var(--subtle); font-variant-numeric: tabular-nums; }
-    main { max-width: 720px; margin: 0 auto; padding: 40px 24px 80px; }
-    .chip { display: inline-flex; background: var(--elevated); color: var(--muted); font-size: 11px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; padding: 4px 12px; border-radius: 999px; }
-    h1, h2, .display { font-family: Fraunces, Georgia, serif; font-weight: 500; letter-spacing: -0.02em; }
-    h1 { font-size: clamp(2rem, 4vw, 3rem); line-height: 1.15; }
-    .lede { margin-top: 24px; font-size: 18px; line-height: 1.55; color: var(--muted); max-width: 36em; }
-    .stats { margin-top: 32px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; border: 1px solid var(--border); background: var(--surface); border-radius: 16px; padding: 20px; text-align: center; }
-    .stats strong { display: block; font-family: Fraunces, Georgia, serif; font-size: 24px; font-weight: 500; }
-    .stats span { display: block; margin-top: 4px; font-size: 14px; color: var(--subtle); }
-    .note { margin-top: 32px; font-size: 14px; line-height: 1.55; color: var(--muted); }
-    .fine { margin-top: 12px; font-size: 14px; line-height: 1.55; color: var(--subtle); font-style: italic; }
-    .legal { margin-top: 40px; font-size: 11px; line-height: 1.55; color: var(--subtle); max-width: 42em; }
-    .btn { min-height: 48px; width: 100%; border: 0; border-radius: 8px; padding: 16px 32px; font-size: 16px; font-weight: 600; font-family: inherit; }
-    .btn-primary { margin-top: 40px; background: var(--fg); color: var(--bg); }
-    .btn-ghost { margin-top: 12px; background: transparent; color: var(--fg); border: 1px solid var(--border); font-weight: 500; }
-    .btn:disabled { background: var(--elevated); color: var(--subtle); cursor: not-allowed; }
-    @media (min-width: 640px) { .btn { width: auto; } }
-    label { display: block; margin-bottom: 20px; }
-    label span { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 500; color: var(--muted); }
-    input, select, textarea { width: 100%; min-height: 48px; border: 1px solid var(--border); background: var(--elevated); color: var(--fg); border-radius: 8px; padding: 12px 16px; font: inherit; font-size: 16px; outline: none; }
-    textarea { min-height: 160px; resize: vertical; line-height: 1.5; }
-    .row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-    .row span { font-size: 14px; color: var(--subtle); }
-    .back { background: none; border: 0; color: var(--subtle); font: inherit; min-height: 44px; }
-    .cat { font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--subtle); margin-bottom: 12px; }
-    .opt { display: flex; align-items: flex-start; gap: 12px; width: 100%; min-height: 48px; text-align: left; border: 1px solid var(--border); background: var(--surface); color: var(--muted); border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; font: inherit; }
-    .opt.on { border-color: var(--fg); background: var(--fg); color: var(--bg); }
-    .dot { width: 24px; height: 24px; border-radius: 999px; border: 1px solid var(--border-strong); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; flex-shrink: 0; margin-top: 2px; }
-    .opt.on .dot { border-color: var(--bg); background: var(--bg); color: var(--fg); }
-    .card { border: 1px solid var(--border); background: var(--surface); border-radius: 16px; padding: 20px; margin-top: 16px; }
-    .bar { height: 8px; background: var(--elevated); border-radius: 999px; margin-top: 8px; overflow: hidden; }
-    .bar i { display: block; height: 100%; background: var(--fg); }
-    .items { margin-top: 12px; }
-    .items li { display: flex; justify-content: space-between; gap: 16px; border-top: 1px solid var(--border); padding: 10px 0; font-size: 14px; color: var(--muted); }
-    .items b { color: var(--fg); font-variant-numeric: tabular-nums; flex-shrink: 0; }
-    .comment { margin-top: 16px; background: var(--elevated); border-radius: 8px; padding: 16px; }
-    .comment p { margin-top: 8px; font-size: 14px; line-height: 1.55; white-space: pre-wrap; }
-    .scores { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
-    .scores div { background: var(--elevated); border-radius: 8px; padding: 12px; }
-    .scores dt { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--subtle); }
-    .scores dd { margin-top: 4px; font-family: Fraunces, Georgia, serif; font-size: 20px; }
-    #radar { width: 100%; height: 360px; }
-    .hidden { display: none; }
+    :root { --bg:#0f1f30; --surface:#16283a; --elevated:#1c3146; --fg:#f3efe6; --muted:#9aa8b6; --subtle:#6e7c8a; --border:rgba(243,239,230,.14); }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--fg); font-family: "Source Sans 3", system-ui, sans-serif; }
+    main { max-width: 980px; margin: 0 auto; padding: 40px 20px 64px; }
+    h1, h2 { font-family: Fraunces, Georgia, serif; font-weight: 560; letter-spacing: -0.02em; }
+    h1 { font-size: 40px; margin: 8px 0 0; }
+    h2 { font-size: 28px; margin: 0; }
+    p { line-height: 1.5; }
+    button, input, select, textarea { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    .kicker { letter-spacing: .16em; text-transform: uppercase; color: var(--muted); font-size: 13px; font-weight: 600; }
+    .muted { color: var(--muted); }
+    .subtle { color: var(--subtle); }
+    .grid { display: grid; gap: 28px; }
+    @media (min-width: 860px) { .grid.two { grid-template-columns: 1fr 1fr; } }
+    label { display: block; color: var(--muted); font-size: 14px; margin-top: 12px; }
+    input, select, textarea { width: 100%; margin-top: 6px; border: 1px solid var(--border); background: var(--elevated); border-radius: 10px; padding: 12px 14px; outline: none; }
+    textarea { min-height: 140px; }
+    .btn { min-height: 44px; border: 0; border-radius: 10px; background: var(--fg); color: var(--bg); font-weight: 650; padding: 0 16px; }
+    .ghost { background: transparent; color: var(--fg); border: 1px solid var(--border); }
+    .row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+    .card, .pick { border: 1px solid var(--border); background: var(--surface); border-radius: 14px; padding: 14px 16px; text-align: left; width: 100%; }
+    .pick.on, .scale.on { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+    .scale { display: flex; gap: 10px; width: 100%; min-height: 48px; align-items: center; border: 1px solid var(--border); background: var(--surface); color: var(--muted); border-radius: 12px; padding: 10px 14px; margin-top: 8px; }
+    .bar { height: 8px; background: var(--elevated); border-radius: 99px; overflow: hidden; }
+    .bar span { display: block; height: 100%; background: var(--fg); }
+    .link { word-break: break-all; color: var(--subtle); font-size: 14px; }
+    .legal { margin-top: 36px; max-width: 560px; color: var(--subtle); font-size: 12px; }
+    .err { color: var(--fg); }
   </style>
 </head>
 <body>
-  <header>
-    <span class="mark">OR</span>
-    <div class="track"><div class="fill" id="fill"></div></div>
-    <span class="pct" id="pct">0%</span>
-  </header>
-  <main id="app"></main>
+  <main id="app">Opening…</main>
   <script>
-    const CATS = [
-      { id: "slt-feedback", name: "Effectiveness of Feedback to SLT", short: "SLT Feedback", radar: ["SLT","Feedback"], theme: "Value-added, timely, consistent, clear, actionable, simple." },
-      { id: "svp-plant", name: "Quality of relationships with SVP / Plant Manager", short: "SVP / Plant Manager", radar: ["SVP /","Plant Mgr"], theme: "Healthy pushback, structured time, verbal and written line up." },
-      { id: "directors-mlm", name: "Quality of relationships with Directors and MLMs", short: "Directors & MLMs", radar: ["Directors","& MLMs"], theme: "Feedback valued and acted on; enough time; not only when convenient." },
-      { id: "fleet", name: "Fleet Collaboration", short: "Fleet", radar: ["Fleet"], theme: "Best practices across the fleet; strong ties to HR, Comms, Employee Concerns." }
-    ];
-    const Q = [
-      ["s1","slt-feedback","Raises issues and observations the SLT would not have seen on its own."],
-      ["s2","slt-feedback","Raises the issue while leadership can still change course."],
-      ["s3","slt-feedback","Gives SLT feedback as a regular practice, not only when there is an emergent issue."],
-      ["s4","slt-feedback","Describes issues clearly with actionable next steps."],
-      ["p1","svp-plant","Discussions have healthy conflict from both sides to broaden perspectives and increase understanding."],
-      ["p2","svp-plant","Puts time on the calendar for feedback."],
-      ["p3","svp-plant","Challenges leaders to match what they say vs. what they put in writing."],
-      ["p4","svp-plant","Keeps challenge about the work, not about status, saving face, or who “won.”"],
-      ["d1","directors-mlm","Spends enough time with Directors and mid-level managers to build working relationships."],
-      ["d2","directors-mlm","Provides feedback when it is uncomfortable, not only when it is easy."],
-      ["d3","directors-mlm","Directors and mid-level managers find the feedback useful rather than something to endure."],
-      ["d4","directors-mlm","Leaders take action from the feedback."],
-      ["f1","fleet","Brings practices and lessons from across the fleet."],
-      ["f2","fleet","Makes what they learn usable for other sites."],
-      ["f3","fleet","Relationships with HR, Communications, and Employee Concerns are developed and effective."]
-    ].map(([id, categoryId, text]) => ({ id, categoryId, text }));
-    const SCALE = [
-      [1,"Rarely true"],[2,"Occasionally true"],[3,"Sometimes true"],
-      [4,"Often true"],[5,"Consistently true"],[0,"Unable to observe"]
-    ];
-    const ROLES = ["SLT member","SVP / Plant Manager","Director","Mid-level manager","HR / Communications / Employee Concerns","Peer at another site","Other"];
-    const SAMPLE_A = { s1:5,s2:4,s3:5,s4:4,p1:3,p2:4,p3:3,p4:3,d1:2,d2:3,d3:2,d4:3,f1:4,f2:4,f3:5 };
-    const SAMPLE_C = {
-      "slt-feedback": "Raises issues SLT would not have seen, and does it while there is still time to change course. Next steps are usually clear.",
-      "svp-plant": "Healthy conflict is present in the room. Calendar time for feedback is inconsistent, and verbal and written do not always line up.",
-      "directors-mlm": "Not enough time with Directors and MLMs. Feedback can land as something to endure. Follow-through after the conversation is the gap.",
-      fleet: "Brings practices from other sites and makes them usable here. Ties to HR, Communications, and Employee Concerns are developed and effective."
-    };
-    const STEPS = CATS.flatMap(c => [
-      ...Q.filter(q => q.categoryId === c.id).map(q => ({ kind: "q", id: q.id })),
-      { kind: "c", id: c.id }
-    ]);
-    const cat = id => CATS.find(c => c.id === id);
-    const mean = (id, a) => {
-      const v = Q.filter(q => q.categoryId === id).map(q => a[q.id]).filter(x => x > 0);
-      return v.length ? v.reduce((s,n)=>s+n,0)/v.length : null;
-    };
-    const S = {
-      phase: "landing", i: 0,
-      profile: { name:"", role:"", subject:"", site:"" },
-      answers: Object.fromEntries(Q.map(q => [q.id, null])),
-      comments: Object.fromEntries(CATS.map(c => [c.id, ""]))
-    };
-    function setProgress(n) {
-      document.getElementById("fill").style.width = n + "%";
-      document.getElementById("pct").textContent = n + "%";
+    const app = document.getElementById("app");
+    function esc(s) {
+      return String(s ?? "").replace(/[&<>"']/g, (c) => {
+        if (c === "&") return "&" + "amp;";
+        if (c === "<") return "&" + "lt;";
+        if (c === ">") return "&" + "gt;";
+        if (c === '"') return "&" + "quot;";
+        return "&" + "#39;";
+      });
     }
-    function h(html) { document.getElementById("app").innerHTML = html; }
-    function on(sel, fn) { document.querySelector(sel)?.addEventListener("click", fn); }
-    function render() {
-      if (S.phase === "landing") {
-        setProgress(0);
-        h(`<p class="chip">Client preview</p>
-          <p class="display" style="margin-top:24px;font-size:18px;color:var(--muted)">OR</p>
-          <h1>Influence and Collaboration Assessment</h1>
-          <p class="lede">A 15-item instrument for how this role shows up with SLT, the Plant Manager, Directors and mid-level managers, and the wider fleet.</p>
-          <div class="stats"><div><strong>15</strong><span>items</span></div><div><strong>4</strong><span>categories</span></div><div><strong>6–8</strong><span>minutes</span></div></div>
-          <p class="note">Rate what you have actually observed. There are no right answers. Use “Unable to observe” when you do not have a basis to judge.</p>
-          <p class="fine">Responses in this preview are not saved. Walk the experience before fielding.</p>
-          <button class="btn btn-primary" id="begin">Begin the assessment</button>
-          <button class="btn btn-ghost" id="sample">View a sample report</button>
-          <p class="legal">© 2026 Bellomo Leadership LLC. All rights reserved. This instrument is proprietary. Unauthorized copying, distribution, or reuse is prohibited.</p>`);
-        on("#begin", () => { S.phase = "profile"; render(); });
-        on("#sample", () => {
-          S.profile = { name:"Sample rater", role:"SLT member", subject:"Site OR", site:"Preview plant" };
-          S.answers = { ...SAMPLE_A }; S.comments = { ...SAMPLE_C }; S.phase = "results"; render();
-        });
-        return;
+    const params = new URLSearchParams(location.search);
+    const legal = `<p class="legal">© 2026 Bellomo Leadership LLC. All rights reserved. This instrument is proprietary. Unauthorized copying, distribution, or reuse is prohibited.</p>`;
+    async function api(op, body, extra) {
+      const q = new URLSearchParams({ op, ...(extra || {}) });
+      const res = await fetch("/api/desk?" + q, {
+        method: body ? "POST" : "GET",
+        headers: body ? { "Content-Type": "application/json" } : {},
+        body: body ? JSON.stringify(body) : undefined,
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "Request failed");
+      return data;
+    }
+    function copy(value) {
+      const area = document.createElement("textarea");
+      area.value = value;
+      area.style.position = "fixed";
+      area.style.left = "0";
+      area.style.top = "0";
+      document.body.appendChild(area);
+      area.focus();
+      area.select();
+      let ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+      area.remove();
+      if (ok) return Promise.resolve();
+      if (navigator.clipboard) return navigator.clipboard.writeText(value);
+      return Promise.reject();
+    }
+    function shell(html) { app.innerHTML = html + legal; }
+
+    async function rater() {
+      const token = params.get("r");
+      const info = await api("form", null, { token });
+      if (!info.found) return shell(`<h1>This link is not valid.</h1><p class="muted">Ask for a new one if you were invited to rate.</p>`);
+      const meta = await api("status");
+      if (info.submitted) return shell(`<p class="kicker">OR</p><h1>Thank you.</h1><p class="muted">Your response is in. You do not need to do anything else.</p>`);
+      const who = [info.subjectName, info.subjectRole, info.site].filter(Boolean).join(" · ");
+      let step = -1;
+      const answers = {};
+      const comments = {};
+      const steps = [];
+      meta.categories.forEach((cat) => {
+        meta.items.filter((item) => item.categoryId === cat.id).forEach((item) => steps.push({ kind: "q", item, cat }));
+        steps.push({ kind: "c", cat });
+      });
+      function paint() {
+        if (step < 0) {
+          shell(`<p class="kicker">OR</p><h1>Influence and Collaboration Assessment</h1>
+            <p class="muted">You are rating ${esc(who)}. Fifteen items. About six to eight minutes. Rate only what you have actually observed.</p>
+            <p class="subtle">${esc(info.name)} · ${esc(info.vantage)}</p>
+            <div class="row"><button class="btn" id="begin">Begin</button></div>`);
+          document.getElementById("begin").onclick = () => { step = 0; paint(); };
+          return;
+        }
+        const current = steps[step];
+        const pct = Math.round(((step + 1) / steps.length) * 100);
+        if (current.kind === "q") {
+          const n = meta.items.findIndex((item) => item.id === current.item.id) + 1;
+          const scales = [[1,"Rarely true"],[2,"Occasionally true"],[3,"Sometimes true"],[4,"Often true"],[5,"Consistently true"],[0,"Unable to observe"]];
+          shell(`<div class="bar"><span style="width:${pct}%"></span></div>
+            <div class="row" style="justify-content:space-between"><span class="subtle">Question ${n} of 15</span><button class="ghost" id="back">Back</button></div>
+            <p class="kicker">${current.cat.name}</p>
+            <h2>${current.item.text}</h2>
+            <p class="subtle" style="font-style:italic">${current.cat.theme}</p>
+            <div id="scales"></div>
+            <div class="row"><button class="btn" id="next" disabled>Next</button></div>`);
+          const box = document.getElementById("scales");
+          scales.forEach(([score, label]) => {
+            const b = document.createElement("button");
+            b.className = "scale" + (answers[current.item.id] === score ? " on" : "");
+            b.innerHTML = `<b style="width:24px">${score === 0 ? "–" : score}</b> ${label}`;
+            b.onclick = () => { answers[current.item.id] = score; paint(); };
+            box.appendChild(b);
+          });
+          document.getElementById("next").disabled = answers[current.item.id] == null;
+          document.getElementById("next").onclick = () => { step += 1; paint(); };
+        } else {
+          const last = step + 1 >= steps.length;
+          shell(`<div class="bar"><span style="width:${pct}%"></span></div>
+            <div class="row" style="justify-content:space-between"><span class="subtle">Optional comment</span><button class="ghost" id="back">Back</button></div>
+            <p class="kicker">${current.cat.name}</p>
+            <h2>Anything to add about ${current.cat.short}?</h2>
+            <p class="muted">Specific examples help. Skip this if you have nothing to add.</p>
+            <textarea id="note">${comments[current.cat.id] || ""}</textarea>
+            <p class="err" id="err"></p>
+            <div class="row"><button class="btn" id="next">${last ? "Submit" : "Continue"}</button></div>`);
+          document.getElementById("next").onclick = async () => {
+            comments[current.cat.id] = document.getElementById("note").value;
+            if (!last) { step += 1; paint(); return; }
+            document.getElementById("next").disabled = true;
+            try {
+              await api("submit", { token, answers, comments });
+              shell(`<p class="kicker">OR</p><h1>Thank you.</h1><p class="muted">Your response is in. You do not need to do anything else.</p>`);
+            } catch (err) {
+              document.getElementById("err").textContent = err.message;
+              document.getElementById("next").disabled = false;
+            }
+          };
+        }
+        const back = document.getElementById("back");
+        if (back) back.onclick = () => { step -= 1; paint(); };
       }
-      if (S.phase === "profile") {
-        setProgress(4);
-        h(`<h1>Before we begin</h1>
-          <p class="note">This information contextualizes results. Individual comments stay attributed only as the team agrees when fielding.</p>
-          <form id="pf" style="margin-top:32px">
-            <label><span>Your name</span><input id="name" placeholder="First and last name" value="${esc(S.profile.name)}" /></label>
-            <label><span>Your relationship to the person being rated</span>
-              <select id="role"><option value="">Select your vantage point</option>${ROLES.map(r=>`<option${S.profile.role===r?" selected":""}>${r}</option>`).join("")}</select>
+      paint();
+    }
+
+    function mean(catId, ratings, items) {
+      const keys = new Set(items.filter((item) => item.categoryId === catId).map((item) => item.id));
+      const values = ratings.filter((row) => keys.has(row.itemKey) && row.value > 0).map((row) => row.value);
+      if (!values.length) return null;
+      return values.reduce((a, b) => a + b, 0) / values.length;
+    }
+
+    async function report() {
+      const data = await api("report", null, { token: params.get("report") });
+      const meta = await api("status");
+      if (!data.found) return shell(`<h1>This report link is not valid.</h1>`);
+      const who = [data.subjectName, data.subjectRole, data.site].filter(Boolean).join(" · ");
+      const blocks = meta.categories.map((cat) => {
+        const score = mean(cat.id, data.ratings, meta.items);
+        const notes = data.comments.filter((row) => row.categoryId === cat.id);
+        const items = meta.items.filter((item) => item.categoryId === cat.id).map((item) => {
+          const values = data.ratings.filter((row) => row.itemKey === item.id && row.value > 0);
+          const itemMean = values.length ? values.reduce((a, row) => a + row.value, 0) / values.length : null;
+          return `<li style="display:flex;justify-content:space-between;gap:16px;border-top:1px solid var(--border);padding:10px 0" class="muted"><span>${item.text}</span><b style="color:var(--fg)">${itemMean == null ? "n/a" : itemMean.toFixed(2)}</b></li>`;
+        }).join("");
+        return `<section class="card" style="margin-top:12px"><h2 style="font-size:20px">${cat.name}</h2>
+          <p class="subtle" style="font-style:italic">${cat.theme}</p>
+          <p class="muted">Mean ${score == null ? "n/a" : score.toFixed(2)}</p>
+          <div class="bar"><span style="width:${score == null ? 0 : Math.round((score / 5) * 100)}%"></span></div>
+          <ul style="list-style:none;padding:0">${items}</ul>
+          <div class="card" style="background:var(--elevated)"><p class="kicker">Comments</p>
+          ${notes.length ? notes.map((n) => `<p>${esc(n.body)}</p>`).join("") : `<p class="subtle" style="font-style:italic">No comment provided.</p>`}
+          </div></section>`;
+      }).join("");
+      const snapshot = meta.categories.map((cat) => {
+        const score = mean(cat.id, data.ratings, meta.items);
+        return `<div class="card"><div class="kicker">${cat.short}</div><div style="font-family:Fraunces,Georgia,serif;font-size:28px">${score == null ? "n/a" : score.toFixed(2)}</div></div>`;
+      }).join("");
+      shell(`<p class="kicker">Facilitator report</p><h1>${esc(data.subjectName)}</h1>
+        <p class="muted">${esc(who)}</p>
+        <p class="subtle">${data.done} of ${data.invited} raters finished. Comments are not attributed.</p>
+        ${data.done < 3 ? `<p class="muted">Fewer than three finished responses. Treat the picture as a conversation, not a score.</p>` : ""}
+        <div class="grid" style="grid-template-columns:1fr 1fr;margin-top:16px">${snapshot}</div>
+        ${data.vantages.length ? `<p class="muted">Finished from: ${data.vantages.map((row) => `${row.vantage} (${row.n})`).join(", ")}</p>` : ""}
+        ${blocks}`);
+    }
+
+    async function desk() {
+      const status = await api("status");
+      if (!status.authed) {
+        shell(`<p class="kicker">Bellomo Leadership</p><h1>OR desk</h1>
+          <p class="muted">${status.needsSetup ? "Choose a password for this desk. You will need it next time." : "Open an engagement, add the raters, and send each one a private link."}</p>
+          <form id="login" style="max-width:360px">
+            <label>${status.needsSetup ? "Choose a desk password" : "Desk password"}
+              <input id="pw" type="password" autocomplete="${status.needsSetup ? "new-password" : "current-password"}" />
             </label>
-            <label><span>Person or role being rated (optional in preview)</span><input id="subject" placeholder="Name or role" value="${esc(S.profile.subject)}" /></label>
-            <label><span>Site / plant (optional)</span><input id="site" placeholder="Plant or site name" value="${esc(S.profile.site)}" /></label>
-            <button class="btn btn-primary" type="submit">Start the assessment</button>
-          </form>
-          <p class="legal">© 2026 Bellomo Leadership LLC. All rights reserved. This instrument is proprietary. Unauthorized copying, distribution, or reuse is prohibited.</p>`);
-        document.getElementById("pf").onsubmit = e => {
-          e.preventDefault();
-          S.profile = { name: name.value, role: role.value, subject: subject.value, site: site.value };
-          S.i = 0; S.phase = "survey"; render();
+            ${status.needsSetup ? `<p class="subtle">At least 8 characters.</p>` : ""}
+            <p class="err" id="err"></p>
+            <div class="row"><button class="btn" type="submit">${status.needsSetup ? "Set password" : "Open desk"}</button></div>
+          </form>`);
+        document.getElementById("login").onsubmit = async (event) => {
+          event.preventDefault();
+          try {
+            await api(status.needsSetup ? "setup" : "login", { password: document.getElementById("pw").value });
+            desk();
+          } catch (err) { document.getElementById("err").textContent = err.message; }
         };
         return;
       }
-      if (S.phase === "survey") {
-        setProgress(Math.round(((S.i+1)/STEPS.length)*100));
-        const step = STEPS[S.i];
-        if (step.kind === "q") {
-          const q = Q.find(x => x.id === step.id);
-          const c = cat(q.categoryId);
-          const qn = Q.findIndex(x => x.id === q.id) + 1;
-          h(`<div class="row"><span>Question ${qn} of ${Q.length}</span><button class="back" id="back">Back</button></div>
-            <p class="cat">${c.name}</p>
-            <h2 style="font-size:1.6rem;line-height:1.25">${q.text}</h2>
-            <p class="fine">${c.theme}</p>
-            <div style="margin:32px 0">${SCALE.map(([v,l]) => `<button class="opt${S.answers[q.id]===v?" on":""}" data-v="${v}"><span class="dot">${v===0?"–":v}</span><span>${l}</span></button>`).join("")}</div>
-            <button class="btn btn-primary" id="next" ${S.answers[q.id]==null?"disabled":""}>Next</button>
-            <p class="legal">© 2026 Bellomo Leadership LLC. All rights reserved. This instrument is proprietary. Unauthorized copying, distribution, or reuse is prohibited.</p>`);
-          document.querySelectorAll(".opt").forEach(b => b.onclick = () => { S.answers[q.id] = +b.dataset.v; render(); });
-          on("#next", () => { if (S.answers[q.id]==null) return; S.i++; if (S.i>=STEPS.length) S.phase="results"; render(); });
-          on("#back", back);
-        } else {
-          const c = cat(step.id);
-          const last = S.i+1 >= STEPS.length;
-          h(`<div class="row"><span>Optional comment</span><button class="back" id="back">Back</button></div>
-            <p class="cat">${c.name}</p>
-            <h2 style="font-size:1.6rem;line-height:1.25">Anything to add about ${c.short}?</h2>
-            <p class="note">Specific examples help. Skip this if you have nothing to add.</p>
-            <textarea id="cm" placeholder="Optional — what did you observe?">${esc(S.comments[c.id])}</textarea>
-            <button class="btn btn-primary" id="next">${last?"See preview results":"Continue"}</button>`);
-          on("#next", () => { S.comments[c.id] = document.getElementById("cm").value; S.i++; if (S.i>=STEPS.length) S.phase="results"; render(); });
-          on("#back", () => { S.comments[c.id] = document.getElementById("cm").value; back(); });
-        }
-        return;
-      }
-      setProgress(100);
-      const intro = [S.profile.name||"Preview rater", S.profile.role, S.profile.subject && "rating "+S.profile.subject, S.profile.site].filter(Boolean).join(" · ");
-      const scores = CATS.map(c => ({ ...c, mean: mean(c.id, S.answers) }));
-      const ranked = scores.filter(s => s.mean!=null).sort((a,b)=>b.mean-a.mean);
-      const spread = ranked.length>=2 && ranked[0].mean !== ranked[ranked.length-1].mean;
-      h(`<p class="chip">Preview results</p>
-        <h1 style="margin-top:16px">Category snapshot</h1>
-        <p class="lede">${esc(intro)}.</p>
-        <section class="card">
-          <h2>Strengths and gaps</h2>
-          <p class="fine">Outer ring is 5 — consistently true. Inner is 1. Unable to observe is left off the mean and sits at the center.</p>
-          <svg id="radar" viewBox="0 0 400 400" role="img" aria-label="Category radar"></svg>
-          ${spread?`<p style="margin-top:8px;font-size:14px;line-height:1.5">Stronger on ${ranked[0].short} (${ranked[0].mean.toFixed(2)}). Weaker on ${ranked[ranked.length-1].short} (${ranked[ranked.length-1].mean.toFixed(2)}).</p>`:""}
-          <dl class="scores">${scores.map(s=>`<div><dt>${s.short}</dt><dd>${s.mean==null?"n/a":s.mean.toFixed(2)}</dd></div>`).join("")}</dl>
-        </section>
-        ${CATS.map(c => {
-          const m = mean(c.id, S.answers);
-          const pct = m==null?0:Math.round((m/5)*100);
-          const items = Q.filter(q=>q.categoryId===c.id);
-          const comment = (S.comments[c.id]||"").trim();
-          return `<section class="card">
-            <h2 style="font-size:16px;font-family:inherit;font-weight:600">${c.name}</h2>
-            <p class="fine">${c.theme}</p>
-            <div class="row" style="margin:16px 0 0;font-size:14px;color:var(--muted)"><span>Category mean (1–5, excluding unable to observe)</span><b style="color:var(--fg)">${m==null?"n/a":m.toFixed(2)}</b></div>
-            <div class="bar"><i style="width:${pct}%"></i></div>
-            <ul class="items">${items.map(q=>{const v=S.answers[q.id]; const lab=v===0?"Unable to observe":v==null?"—":v; return `<li><span>${q.text}</span><b>${lab}</b></li>`;}).join("")}</ul>
-            <div class="comment"><p class="cat">Comments</p><p ${comment?"":'style="color:var(--subtle);font-style:italic"'}>${comment?esc(comment):"No comment provided."}</p></div>
-          </section>`;
-        }).join("")}
-        <p class="fine" style="margin-top:32px">In the live instrument, this page can be reserved for a facilitator report. This preview shows scores so you can walk the four categories with the client.</p>
-        <button class="btn btn-primary" id="reset">Run preview again</button>
-        <p class="legal">© 2026 Bellomo Leadership LLC. All rights reserved. This instrument is proprietary. Unauthorized copying, distribution, or reuse is prohibited.</p>`);
-      drawRadar(scores);
-      on("#reset", () => { location.reload(); });
-    }
-    function back() {
-      if (S.i===0) { S.phase="profile"; render(); return; }
-      S.i--; render();
-    }
-    function esc(s){ return String(s||"").replace(/[&<>"']/g, m => ({"&":"&"+"amp;","<":"&"+"lt;",">":"&"+"gt;","\"":"&"+"quot;","'":"&#39;"}[m])); }
-    function drawRadar(scores) {
-      const svg = document.getElementById("radar");
-      const cx=200, cy=200, R=110, n=4;
-      const pt = (i, r) => {
-        const a = -Math.PI/2 + i*(Math.PI*2/n);
-        return [cx + Math.cos(a)*r, cy + Math.sin(a)*r];
-      };
-      let g = "";
-      for (let ring=1; ring<=5; ring++) {
-        const pts = Array.from({length:n}, (_,i)=>pt(i, R*ring/5).join(",")).join(" ");
-        g += `<polygon points="${pts}" fill="none" stroke="rgba(243,239,230,.28)" />`;
-      }
-      for (let i=0;i<n;i++) {
-        const [x,y]=pt(i,R);
-        g += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="rgba(243,239,230,.28)" />`;
-      }
-      const poly = scores.map((s,i)=>pt(i, R*((s.mean||0)/5)).join(",")).join(" ");
-      g += `<polygon points="${poly}" fill="rgba(243,239,230,.2)" stroke="#f3efe6" stroke-width="2" />`;
-      scores.forEach((s,i) => {
-        const [x,y]=pt(i, R*((s.mean||0)/5));
-        g += `<circle cx="${x}" cy="${y}" r="3.5" fill="#f3efe6" stroke="#0f1f30" />`;
-        const [lx,ly]=pt(i, R+28);
-        const anchor = lx>cx+8?"start":lx<cx-8?"end":"middle";
-        const lines = s.radar;
-        lines.forEach((line, li) => {
-          const dy = (ly<cy?- (lines.length-1)*7 : ly>cy? li*14 : (li-(lines.length-1)/2)*14);
-          g += `<text x="${lx}" y="${ly+dy}" text-anchor="${anchor}" fill="#9aa8b6" font-size="12" font-family="Source Sans 3, sans-serif">${line}</text>`;
+      const pack = await api("engagements");
+      let selected = pack.engagements[0]?.id || "";
+      function paint(notice) {
+        const current = pack.engagements.find((row) => row.id === selected);
+        shell(`<div style="display:flex;justify-content:space-between;gap:12px"><div><p class="kicker">Bellomo Leadership</p><h1>OR desk</h1></div><button class="ghost" id="lock">Lock</button></div>
+          ${status.mailReady ? "" : `<p class="subtle">Mail is not on yet. Copy each private link.</p>`}
+          <p class="muted" id="notice">${notice || ""}</p>
+          <div class="grid two">
+            <section>
+              <h2>New engagement</h2>
+              <form id="create">
+                <label>Person or role being rated<input id="subject" /></label>
+                <label>Role<input id="role" value="Site OR" /></label>
+                <label>Site<input id="site" /></label>
+                <div class="row"><button class="btn" type="submit">Create</button></div>
+              </form>
+              <div id="list" style="margin-top:16px"></div>
+            </section>
+            <section id="side"></section>
+          </div>`);
+        document.getElementById("lock").onclick = async () => { await api("logout", {}); desk(); };
+        const list = document.getElementById("list");
+        pack.engagements.forEach((row) => {
+          const b = document.createElement("button");
+          b.className = "pick" + (row.id === selected ? " on" : "");
+          b.innerHTML = `<b>${esc(row.subjectName)}</b><div class="${row.id === selected ? "" : "subtle"}">${row.doneCount} of ${row.raterCount} finished${row.site ? " · " + esc(row.site) : ""}</div>`;
+          b.onclick = () => { selected = row.id; paint(); };
+          list.appendChild(b);
         });
-      });
-      svg.innerHTML = g;
+        document.getElementById("create").onsubmit = async (event) => {
+          event.preventDefault();
+          try {
+            const created = await api("create", {
+              subjectName: document.getElementById("subject").value,
+              subjectRole: document.getElementById("role").value,
+              site: document.getElementById("site").value,
+            });
+            const next = await api("engagements");
+            pack.engagements = next.engagements;
+            selected = created.id;
+            paint();
+          } catch (err) { document.getElementById("notice").textContent = err.message; }
+        };
+        const side = document.getElementById("side");
+        if (!current) { side.innerHTML = `<p class="muted">Create an engagement to add raters.</p>`; return; }
+        side.innerHTML = `<h2>${esc(current.subjectName)}</h2><p class="muted">${esc([current.subjectRole, current.site].filter(Boolean).join(" · "))}</p>
+          <div class="row"><button class="ghost" id="copy-report">Copy report link</button></div>
+          <p class="link">${esc(current.reportLink)}</p>
+          <h3 class="kicker">Add a rater</h3>
+          <form id="add">
+            <label>Name<input id="rname" /></label>
+            <label>Email<input id="remail" type="email" /></label>
+            <label>Vantage point<select id="vant">${status.vantages.map((v) => `<option>${v}</option>`).join("")}</select></label>
+            <div class="row"><button class="btn">Add rater</button></div>
+          </form>
+          <div id="raters"></div>`;
+        document.getElementById("copy-report").onclick = () => copy(current.reportLink).then(() => { document.getElementById("notice").textContent = "Copied."; }).catch(() => { document.getElementById("notice").textContent = "Select the link and copy it."; });
+        document.getElementById("add").onsubmit = async (event) => {
+          event.preventDefault();
+          try {
+            await api("rater", { engagementId: current.id, name: document.getElementById("rname").value, email: document.getElementById("remail").value, vantage: document.getElementById("vant").value });
+            const next = await api("engagements");
+            pack.engagements = next.engagements;
+            paint("Rater added.");
+          } catch (err) { document.getElementById("notice").textContent = err.message; }
+        };
+        const box = document.getElementById("raters");
+        current.raters.forEach((rater) => {
+          const el = document.createElement("div");
+          el.className = "card";
+          el.style.marginTop = "12px";
+          el.innerHTML = `<b>${esc(rater.name)}</b><div class="muted">${esc(rater.email)} · ${esc(rater.vantage)}</div>
+            <div class="subtle">${rater.submittedAt ? "Finished" : rater.sentAt ? "Invite sent" : "Not sent"}</div>
+            <p class="link">${esc(rater.link)}</p>
+            <div class="row"><button class="btn send">Send invite</button><button class="ghost copy">Copy link</button></div>`;
+          el.querySelector(".copy").onclick = () => copy(rater.link).then(() => { document.getElementById("notice").textContent = "Copied."; });
+          el.querySelector(".send").onclick = async () => {
+            const result = await api("send", { raterId: rater.id });
+            const next = await api("engagements");
+            pack.engagements = next.engagements;
+            paint(result.sent ? "Invite sent." : (result.reason || "Link is ready."));
+          };
+          box.appendChild(el);
+        });
+      }
+      paint();
     }
-    render();
+
+    (params.get("r") ? rater() : params.get("report") ? report() : desk()).catch((err) => {
+      shell(`<h1>The desk could not open.</h1><p class="muted">${err.message}</p>`);
+    });
   </script>
 </body>
 </html>
