@@ -328,6 +328,8 @@ export default async function handler(req, res) {
         "Your link is private:",
         link,
         "",
+        "Please do not reply to this email. This mailbox is not monitored.",
+        "",
         "Bellomo Leadership",
       ].join("\n");
       const mail = await fetch("https://api.resend.com/emails", {
