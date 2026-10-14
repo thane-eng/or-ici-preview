@@ -37,6 +37,11 @@
     .link { word-break: break-all; color: var(--subtle); font-size: 14px; }
     .legal { margin-top: 36px; max-width: 560px; color: var(--subtle); font-size: 12px; }
     .err { color: var(--fg); }
+    .web { margin: 22px 0 8px; }
+    .web svg { width: 100%; max-width: 560px; height: auto; display: block; margin: 0 auto; }
+    .web figcaption { text-align: center; max-width: 420px; margin: 4px auto 0; font-size: 14px; }
+    .snap { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+    @media (max-width: 560px) { .snap { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -158,6 +163,83 @@
       paint();
     }
 
+
+    function spiderChart(rows) {
+      if (!rows.length) return "";
+      const n = rows.length;
+      const W = 720, H = 640, cx = 360, cy = 318, R = 146;
+      const ang = (i) => -Math.PI / 2 + (i * 2 * Math.PI) / n;
+      const pt = (i, value) => {
+        const a = ang(i);
+        const t = Math.max(0, Math.min(5, value)) / 5;
+        return [cx + Math.cos(a) * R * t, cy + Math.sin(a) * R * t];
+      };
+      const ring = (level) => rows.map((_, i) => {
+        const [x, y] = pt(i, level);
+        return (i ? "L" : "M") + x.toFixed(1) + " " + y.toFixed(1);
+      }).join(" ") + " Z";
+      const rings = [1, 2, 3, 4, 5].map((level) =>
+        `<path d="${ring(level)}" fill="none" stroke="rgba(243,239,230,${level === 5 ? 0.38 : 0.16})" stroke-width="${level === 5 ? 1.4 : 1}"/>`
+      ).join("");
+      const spokes = rows.map((_, i) => {
+        const [x, y] = pt(i, 5);
+        return `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="rgba(243,239,230,.16)"/>`;
+      }).join("");
+      const shape = rows.map((row, i) => {
+        const [x, y] = pt(i, row.score == null ? 0 : row.score);
+        return (i ? "L" : "M") + x.toFixed(1) + " " + y.toFixed(1);
+      }).join(" ") + " Z";
+      const dots = rows.map((row, i) => {
+        const [x, y] = pt(i, row.score == null ? 0 : row.score);
+        return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5" fill="#f3efe6" stroke="#0f1f30" stroke-width="2"/>`;
+      }).join("");
+      function chunks(short) {
+        if (short === "SVP / Plant Manager") return ["SVP / Plant", "Manager"];
+        if (short === "Directors & MLMs") return ["Directors", "& MLMs"];
+        return [short];
+      }
+      const labels = rows.map((row, i) => {
+        const a = ang(i);
+        const cos = Math.cos(a);
+        const sin = Math.sin(a);
+        const anchor = cos > 0.4 ? "start" : cos < -0.4 ? "end" : "middle";
+        const lx = cx + cos * 198;
+        const ly = cy + sin * 198;
+        const lines = chunks(row.short);
+        const score = row.score == null ? "n/a" : Number(row.score).toFixed(2);
+        const lineH = 18;
+        let nameYs;
+        let scoreY;
+        if (sin < -0.4) {
+          scoreY = ly - 6;
+          nameYs = lines.map((_, k) => scoreY - (lines.length - k) * lineH);
+        } else if (sin > 0.4) {
+          nameYs = lines.map((_, k) => ly + 6 + k * lineH);
+          scoreY = ly + 6 + lines.length * lineH + 2;
+        } else {
+          const top = ly - ((lines.length + 1) * lineH) / 2 + 14;
+          nameYs = lines.map((_, k) => top + k * lineH);
+          scoreY = top + lines.length * lineH;
+        }
+        const names = lines.map((line, k) =>
+          `<text x="${lx.toFixed(1)}" y="${nameYs[k].toFixed(1)}" text-anchor="${anchor}" fill="#f3efe6" font-family="Fraunces, Georgia, serif" font-size="16">${esc(line)}</text>`
+        ).join("");
+        return names + `<text x="${lx.toFixed(1)}" y="${scoreY.toFixed(1)}" text-anchor="${anchor}" fill="#9aa8b6" font-family="Source Sans 3, sans-serif" font-size="14">${score}</text>`;
+      }).join("");
+      const ticks = [1, 2, 3, 4, 5].map((level) => {
+        const y = cy - (level / 5) * R;
+        return `<text x="${(cx + 8).toFixed(1)}" y="${(y - 4).toFixed(1)}" fill="#6e7c8a" font-family="Source Sans 3, sans-serif" font-size="11">${level}</text>`;
+      }).join("");
+      return `<figure class="web" aria-label="Spider chart of the four category means, scored from 1 to 5">
+        <svg viewBox="0 0 ${W} ${H}" role="img">
+          ${rings}${spokes}
+          <path d="${shape}" fill="rgba(243,239,230,.2)" stroke="#f3efe6" stroke-width="2.25" stroke-linejoin="round"/>
+          ${dots}${ticks}${labels}
+        </svg>
+        <figcaption class="subtle">Observed means. The outer ring is 5, consistently true. Unable to observe is left out of the mean.</figcaption>
+      </figure>`;
+    }
+
     function mean(catId, ratings, items) {
       const keys = new Set(items.filter((item) => item.categoryId === catId).map((item) => item.id));
       const values = ratings.filter((row) => keys.has(row.itemKey) && row.value > 0).map((row) => row.value);
@@ -187,15 +269,19 @@
           ${notes.length ? notes.map((n) => `<p>${esc(n.body)}</p>`).join("") : `<p class="subtle" style="font-style:italic">No comment provided.</p>`}
           </div></section>`;
       }).join("");
-      const snapshot = meta.categories.map((cat) => {
-        const score = mean(cat.id, data.ratings, meta.items);
-        return `<div class="card"><div class="kicker">${cat.short}</div><div style="font-family:Fraunces,Georgia,serif;font-size:28px">${score == null ? "n/a" : score.toFixed(2)}</div></div>`;
-      }).join("");
+      const profile = meta.categories.map((cat) => ({
+        short: cat.short,
+        score: mean(cat.id, data.ratings, meta.items),
+      }));
+      const snapshot = profile.map((row) =>
+        `<div class="card"><div class="kicker">${esc(row.short)}</div><div style="font-family:Fraunces,Georgia,serif;font-size:28px">${row.score == null ? "n/a" : row.score.toFixed(2)}</div></div>`
+      ).join("");
       shell(`<p class="kicker">Facilitator report</p><h1>${esc(data.subjectName)}</h1>
         <p class="muted">${esc(who)}</p>
         <p class="subtle">${data.done} of ${data.invited} raters finished. Comments are not attributed.</p>
         ${data.done < 3 ? `<p class="muted">Fewer than three finished responses. Treat the picture as a conversation, not a score.</p>` : ""}
-        <div class="grid" style="grid-template-columns:1fr 1fr;margin-top:16px">${snapshot}</div>
+        ${spiderChart(profile)}
+        <div class="snap">${snapshot}</div>
         ${data.vantages.length ? `<p class="muted">Finished from: ${data.vantages.map((row) => `${row.vantage} (${row.n})`).join(", ")}</p>` : ""}
         ${blocks}`);
     }
